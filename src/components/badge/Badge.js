@@ -11,7 +11,8 @@ class Badge extends React.Component {
     render() {
         return (
             <div className="badge-wrapper">
-                {this.props.name}
+                <a className="badge-plus-sign">+</a>
+                <a className="badge-text">{this.props.name}</a>
             </div>
         );
     }

@@ -2,5 +2,43 @@
     display: inline-flex;
     flex-direction: column;
     border: 1px solid;
-    width: 50vw;
+    width: 30vw;
+    height: 50vh;
+}
+
+.favorite-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.favorite-row {
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.dot {
+    margin: 5px 5px 5px 5px;
+    flex: 0.1;
+}
+
+.location-name {
+    display: flex;
+    flex: 1;
+    margin: 5px 5px;
+}
+
+.bottom-locations {
+    display: inline-flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.bottom-locations-row {
+    display: inline-flex;
+    flex-direction: row;
+    flex-flow: wrap;
+}
+
+.quality-conditions {
+    margin: 5px;
 }

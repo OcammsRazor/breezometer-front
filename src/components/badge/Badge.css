@@ -1,7 +1,20 @@
 .badge-wrapper {
     border-radius: 5px;
     background-color: rgb(188, 230, 238);
-    height: 20px;
-    max-width: 100px;
-    text-align: center;
+    min-height: 30px;
+    justify-content: center;
+    display: flex;
+    flex-shrink: 0;
+    margin: 5px 5px;
+}
+
+.badge-plus-sign {
+    color: blue;
+    margin: 3px 3px 3px 3px;
+    font-weight: bold;
+}
+
+.badge-text {
+    margin: 3px 3px 3px 3px;
+    padding-right: 10px;
 }
