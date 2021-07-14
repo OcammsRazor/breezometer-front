@@ -4,7 +4,7 @@ import Card from './components/card/Card'
 function App() {
   return (
     <div className="App">
-      test
+      <h1>Breezometer excercise</h1>
       <Card name="asd"></Card>
     </div>
   );
