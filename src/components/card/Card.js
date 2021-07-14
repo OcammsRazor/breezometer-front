@@ -27,22 +27,22 @@ class Card extends React.Component {
                 this.setState({ locationsList: locations });
             })
 
-        this.fetchFavoriteLocations();
+        this.fetchFavoriteLocations(this.state.currentUser);
     }
 
     selectNewUser(userId) {
+        this.fetchFavoriteLocations(userId);
         this.setState({currentUser: userId});
-        this.fetchFavoriteLocations();
     }
 
-    fetchFavoriteLocations() {
+    fetchFavoriteLocations(userId) {
         const headerConf = {
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded'
             }
         }
 
-        axios.post('http://localhost:3000/users/getFavorites', querystring.stringify({ user_id: this.state.currentUser }), headerConf).then(response => {
+        axios.post('http://localhost:3000/users/getFavorites', querystring.stringify({ user_id: userId }), headerConf).then(response => {
             this.setState({ favoriteLocations: response.data });
         })
     }
