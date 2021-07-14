@@ -1,0 +1,7 @@
+.badge-wrapper {
+    border-radius: 5px;
+    background-color: rgb(188, 230, 238);
+    height: 20px;
+    max-width: 100px;
+    text-align: center;
+}
