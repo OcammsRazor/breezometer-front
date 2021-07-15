@@ -4,6 +4,7 @@ import './Card.css';
 import axios from 'axios';
 import querystring from 'querystring'
 import config from '../../configurations';
+import {FaTrash} from 'react-icons/fa';
 
 class Card extends React.Component {
     constructor(props) {
@@ -15,6 +16,11 @@ class Card extends React.Component {
             qualityConditions: {}
         }
 
+        this.headerConf = {
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded'
+            }
+        }
 
         this.users = [
             { id: 1, name: 'Shachar' },
@@ -37,20 +43,13 @@ class Card extends React.Component {
     }
 
     fetchFavoriteLocations(userId) {
-        const headerConf = {
-            headers: {
-                "Content-Type": 'application/x-www-form-urlencoded'
-            }
-        }
-
-        axios.post(config.server.url + '/users/getFavorites', querystring.stringify({ user_id: userId }), headerConf).then(response => {
+        axios.post(config.server.url + '/users/getFavorites', querystring.stringify({ user_id: userId }), this.headerConf).then(response => {
             this.fetchQualityConditions(response.data)
             this.setState({ favoriteLocations: response.data })
         })
     }
 
     fetchQualityConditions(locationsList) {
-        console.log(locationsList)
         locationsList.map(location => {
             fetch(config.breezometerApi.url + 'lat=' + location.lat + '&lon=' + location.lon + '&key=' + config.breezometerApi.token).then(response => response.json())
                 .then(locations => {
@@ -68,6 +67,21 @@ class Card extends React.Component {
             }
         }
         return false;
+    }
+
+    addToFavorite(location) {
+        axios.post(config.server.url + '/users/addFavorite', querystring.stringify({ user_id: this.state.currentUser, location_id: location.location_id}), this.headerConf).then(response => {})
+        let newFavoriteLocations = this.state.favoriteLocations
+        newFavoriteLocations.push(location)
+        this.fetchQualityConditions(newFavoriteLocations)
+        this.setState({ favoriteLocations: newFavoriteLocations})
+    }
+
+    removeFromFavorites(locationToRemove) {
+        axios.post(config.server.url + '/users/removeFavorite', querystring.stringify({ user_id: this.state.currentUser, location_id: locationToRemove.location_id}), this.headerConf).then(response => {})
+        let newFavoriteLocations = this.state.favoriteLocations.filter(location => location != locationToRemove)
+        this.fetchQualityConditions(newFavoriteLocations)
+        this.setState({ favoriteLocations: newFavoriteLocations})
     }
 
     render() {
@@ -89,6 +103,9 @@ class Card extends React.Component {
                                         <a className='dot'>•</a>
                                         <a className='location-name'>{location.name}</a>
                                         <a className='quality-conditions'>{this.state.qualityConditions[location.name]}/100</a>
+                                        <button className='remove-btn' onClick={() => this.removeFromFavorites(location)}>
+                                            <FaTrash/>
+                                        </button>
                                     </div>
                                 )
                             })}
@@ -98,7 +115,11 @@ class Card extends React.Component {
                         <div className='bottom-locations-row'>
                             {this.state.locationsList.map((location, i) => {
                                 if (!this.shouldRenderLocation(location, i)) {
-                                    return (<Badge key={i} name={location.name}></Badge>)
+                                    return (
+                                        <div key={i} onClick={() => this.addToFavorite(location)}>
+                                            <Badge name={location.name}></Badge>
+                                        </div>
+                                    )
                                 }
                             })}
                         </div>
