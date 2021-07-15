@@ -6,6 +6,7 @@
     display: flex;
     flex-shrink: 0;
     margin: 5px 5px;
+    cursor: pointer;
 }
 
 .badge-plus-sign {

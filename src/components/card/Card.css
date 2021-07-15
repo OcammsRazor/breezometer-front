@@ -14,6 +14,15 @@
 .favorite-row {
     display: inline-flex;
     flex-direction: row;
+    cursor: pointer;
+}
+
+.favorite-row:hover .remove-btn{
+    display: block;
+}
+
+.favorite-row:hover .quality-conditions{
+    display: none;
 }
 
 .dot {
@@ -41,4 +50,11 @@
 
 .quality-conditions {
     margin: 5px;
+    display: block;
+}
+
+.remove-btn {
+    display: none;
+    border: none;
+    background: none;
 }
