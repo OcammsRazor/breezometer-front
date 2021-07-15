@@ -3,6 +3,7 @@ import Badge from '../badge/Badge';
 import './Card.css';
 import axios from 'axios';
 import querystring from 'querystring'
+import config from '../../configurations';
 
 class Card extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Card extends React.Component {
     }
 
     componentWillMount() {
-        fetch('http://localhost:3000/locations/getLocationsList').then(response => response.json())
+        fetch(config.server.url + '/locations/getLocationsList').then(response => response.json())
             .then(locations => {
                 this.setState({ locationsList: locations });
             })
@@ -32,7 +33,7 @@ class Card extends React.Component {
 
     selectNewUser(userId) {
         this.fetchFavoriteLocations(userId);
-        this.setState({currentUser: userId});
+        this.setState({ currentUser: userId });
     }
 
     fetchFavoriteLocations(userId) {
@@ -42,9 +43,18 @@ class Card extends React.Component {
             }
         }
 
-        axios.post('http://localhost:3000/users/getFavorites', querystring.stringify({ user_id: userId }), headerConf).then(response => {
+        axios.post(config.server.url + '/users/getFavorites', querystring.stringify({ user_id: userId }), headerConf).then(response => {
             this.setState({ favoriteLocations: response.data });
         })
+    }
+
+    shouldRenderLocation(location, i) {
+        for(let i = 0; i< this.state.favoriteLocations.length; i++) {
+            if (this.state.favoriteLocations[i].location_id === location.location_id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     render() {
@@ -60,24 +70,24 @@ class Card extends React.Component {
                 <div className='card-wrapper'>
                     <div className='favorite-locations'>
                         <div className='favorite-section'>
-                            {this.state.locationsList.map((location, i) => {
-                                if (this.state.favoriteLocations.includes(location.location_id)) {
-                                    return (
-                                        <div className='favorite-row'>
-                                            <a className='dot'>•</a>
-                                            <a key={i} className='location-name'>{location.name}</a>
-                                            <a className='quality-conditions'>43/100</a>
-                                        </div>
-                                    )
-                                }
+                            {this.state.favoriteLocations.map((location, i) => {
+                                return (
+                                    <div key={i} className='favorite-row'>
+                                        <a className='dot'>•</a>
+                                        <a className='location-name'>{location.name}</a>
+                                        <a className='quality-conditions'>43/100</a>
+                                    </div>
+                                )
                             })}
                         </div>
                     </div>
                     <div className='bottom-locations'>
                         <div className='bottom-locations-row'>
-                            {this.state.locationsList.map((location, i) => (
-                                <Badge key={i} name={location.name}></Badge>
-                            ))}
+                            {this.state.locationsList.map((location, i) => {
+                                if (!this.shouldRenderLocation(location, i)) {
+                                    return(<Badge key={i} name={location.name}></Badge>)
+                                }
+                            })}
                         </div>
                     </div>
                 </div>
