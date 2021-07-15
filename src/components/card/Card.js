@@ -13,7 +13,8 @@ class Card extends React.Component {
             locationsList: [],
             favoriteLocations: [],
             currentUser: 1,
-            qualityConditions: {}
+            qualityConditions: {},
+            popularLocations: []
         }
 
         this.headerConf = {
@@ -32,8 +33,21 @@ class Card extends React.Component {
     componentDidMount() {
         fetch(config.server.url + '/locations/getLocationsList').then(response => response.json())
             .then(locations => {
+                this.fetchPopularLocations();
                 this.setState({ locationsList: locations });
                 this.fetchFavoriteLocations(this.state.currentUser);
+            })
+    }
+
+    fetchPopularLocations() {
+        fetch(config.server.url + '/locations/getPopularLocations').then(response => response.json())
+            .then(locations => {
+                let parsedLocations = locations;
+                for (let i = 0; i < locations.length; i++) {
+                    parsedLocations[i].name = this.state.locationsList.find( loc => loc.location_id === locations[i].location_id).name
+                }
+
+                this.setState({ popularLocations: parsedLocations });
             })
     }
 
@@ -137,6 +151,17 @@ class Card extends React.Component {
                                 }
                             })}
                         </div>
+                    </div>
+                    <div className='popular-locations'>
+                        <h3>Popular locations</h3>
+                        {this.state.popularLocations.map((location, i) => {
+                            return (
+                                <div className='popular-locations-row'>
+                                    <a>{location.name}</a>
+                                    <a>{location.num_of_subscribers}</a>
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>
