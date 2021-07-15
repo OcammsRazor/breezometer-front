@@ -11,7 +11,8 @@ class Card extends React.Component {
         this.state = {
             locationsList: [],
             favoriteLocations: [],
-            currentUser: 1
+            currentUser: 1,
+            qualityConditions: {}
         }
 
 
@@ -22,13 +23,12 @@ class Card extends React.Component {
         ];
     }
 
-    componentWillMount() {
+    componentDidMount() {
         fetch(config.server.url + '/locations/getLocationsList').then(response => response.json())
             .then(locations => {
                 this.setState({ locationsList: locations });
+                this.fetchFavoriteLocations(this.state.currentUser);
             })
-
-        this.fetchFavoriteLocations(this.state.currentUser);
     }
 
     selectNewUser(userId) {
@@ -44,12 +44,25 @@ class Card extends React.Component {
         }
 
         axios.post(config.server.url + '/users/getFavorites', querystring.stringify({ user_id: userId }), headerConf).then(response => {
-            this.setState({ favoriteLocations: response.data });
+            this.fetchQualityConditions(response.data)
+            this.setState({ favoriteLocations: response.data })
+        })
+    }
+
+    fetchQualityConditions(locationsList) {
+        console.log(locationsList)
+        locationsList.map(location => {
+            fetch(config.breezometerApi.url + 'lat=' + location.lat + '&lon=' + location.lon + '&key=' + config.breezometerApi.token).then(response => response.json())
+                .then(locations => {
+                    let obj = this.state.qualityConditions
+                    obj[location.name] = locations.data.indexes.baqi.aqi
+                    this.setState({ qualityConditions: obj })
+                })
         })
     }
 
     shouldRenderLocation(location, i) {
-        for(let i = 0; i< this.state.favoriteLocations.length; i++) {
+        for (let i = 0; i < this.state.favoriteLocations.length; i++) {
             if (this.state.favoriteLocations[i].location_id === location.location_id) {
                 return true;
             }
@@ -75,7 +88,7 @@ class Card extends React.Component {
                                     <div key={i} className='favorite-row'>
                                         <a className='dot'>•</a>
                                         <a className='location-name'>{location.name}</a>
-                                        <a className='quality-conditions'>43/100</a>
+                                        <a className='quality-conditions'>{this.state.qualityConditions[location.name]}/100</a>
                                     </div>
                                 )
                             })}
@@ -85,7 +98,7 @@ class Card extends React.Component {
                         <div className='bottom-locations-row'>
                             {this.state.locationsList.map((location, i) => {
                                 if (!this.shouldRenderLocation(location, i)) {
-                                    return(<Badge key={i} name={location.name}></Badge>)
+                                    return (<Badge key={i} name={location.name}></Badge>)
                                 }
                             })}
                         </div>
