@@ -1,6 +1,6 @@
 .badge-wrapper {
     border-radius: 5px;
-    background-color: rgb(188, 230, 238);
+    background-color: #f0f5ff;
     min-height: 30px;
     justify-content: center;
     display: flex;
@@ -10,7 +10,7 @@
 }
 
 .badge-plus-sign {
-    color: blue;
+    color: #4263eb;
     margin: 3px 3px 3px 3px;
     font-weight: bold;
 }

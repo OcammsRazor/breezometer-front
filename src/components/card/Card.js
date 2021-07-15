@@ -84,6 +84,20 @@ class Card extends React.Component {
         this.setState({ favoriteLocations: newFavoriteLocations})
     }
 
+    setDotColor(qualityCondition) {
+        if (qualityCondition < 20) {
+            return {color: '#6314a1'}
+        } else if(qualityCondition >= 20 && qualityCondition < 40) {
+            return {color: '#e05a0e'}
+        } else if(qualityCondition >= 40 && qualityCondition < 60) {
+            return {color: '#e6ae49'}
+        } else if(qualityCondition >= 60 && qualityCondition < 80) {
+            return {color: '#34d831'}
+        } else {
+            return {color: '#239295'}
+        }
+    }
+
     render() {
         return (
             <div>
@@ -100,7 +114,7 @@ class Card extends React.Component {
                             {this.state.favoriteLocations.map((location, i) => {
                                 return (
                                     <div key={i} className='favorite-row'>
-                                        <a className='dot'>•</a>
+                                        <a style={this.setDotColor(this.state.qualityConditions[location.name])} className='dot'>•</a>
                                         <a className='location-name'>{location.name}</a>
                                         <a className='quality-conditions'>{this.state.qualityConditions[location.name]}/100</a>
                                         <button className='remove-btn' onClick={() => this.removeFromFavorites(location)}>
