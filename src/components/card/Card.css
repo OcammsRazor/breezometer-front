@@ -11,6 +11,17 @@
     flex-direction: column;
 }
 
+.popular-locations {
+    display: flex;
+    flex-direction: column;
+}
+
+.popular-locations-row {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .favorite-row {
     display: inline-flex;
     flex-direction: row;
